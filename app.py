@@ -1,14 +1,19 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-conversation = ['']
-new_message = ''
-message_num = 0
+message = 'herro'
 
 
-@app.route('/')
-def home():
-    return "<html><body\><h1>hello<h1\><body\><html>"
+@app.route("/")
+def hello():
+    return render_template('homepage.html', message=message)
+
+
+@app.route("/send-message", methods=["POST"])
+def receive():
+    global message
+    message = request.form["mytext"]
+    return redirect(url_for("hello"))
 
 
 if __name__ == '__main__':

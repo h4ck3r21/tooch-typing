@@ -1,18 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-message = 'herro'
+messages = ['herro']
 
 
 @app.route("/")
 def hello():
-    return render_template('homepage.html', message=message)
+    return render_template('homepage.html', messages=messages)
 
 
 @app.route("/send-message", methods=["POST"])
 def receive():
-    global message
-    message += f'<br>\n{request.form["mytext"]}'
+    global messages
+    messages.append(request.form["mytext"])
     return redirect(url_for("hello"))
 
 

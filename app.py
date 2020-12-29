@@ -12,7 +12,7 @@ def hello():
 @app.route("/send-message", methods=["POST"])
 def receive():
     global message
-    message += '<br>' + request.form["mytext"]
+    message += '<br>\n' + request.form["mytext"]
     return redirect(url_for("hello"))
 
 

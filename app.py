@@ -1,12 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_socketio import SocketIO, send
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 messages = ['herro']
+
 
 
 @app.route("/")
 def hello():
-    return render_template('homepage.html', messages=messages)
+    return render_template('homepage.html')
+
+
+@socketio.on('my event')
+def handle_my_custom_event(json, methods=['GET', 'POST']):
+    print('received my event: ' + str(json))
+    socketio.emit('my response', json)
 
 
 @app.route("/send-message", methods=["POST"])
@@ -17,4 +26,4 @@ def receive():
 
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)

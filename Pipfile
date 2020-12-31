@@ -8,7 +8,6 @@ flask = "*"
 tqdm = "*"
 gunicorn = "*"
 flask-socketio = "*"
-eventlog = "*"
 
 [dev-packages]
 

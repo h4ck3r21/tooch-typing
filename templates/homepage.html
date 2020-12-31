@@ -1,21 +1,21 @@
 <!DOCTYPE HTML>
 <html lang = "en">
     <head>
-        <title>formDemo.html</title>
+        <title>Not a Game</title>
         <meta charset = "UTF-8" />
     </head>
     <body>
+    <h3 id="error-message" style='color: #ccc;font-size: 30px;'>No message yet..</h3>
         <form action="/send-message" method="post">
-                <p>
-                    <label>Text box</label>
-                    <input type="text" name="mytext"/>
+                <p align="center">
+                    <h3 hidden id="username">{{name}}</h3>
+                    <input type="text" name="mytext" class="message" />
                     <input type="submit" value="Submit"/>
                 </p>
         </form>
-        <h1>
-            {% for message in messages: %}
-            {{ message }}<br>
-            {% endfor %}
-        </h1>
+        <div class="message_holder"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+        <script src="{{ url_for('static', filename='sockets.js') }}"></script>
     </body>
 </html>

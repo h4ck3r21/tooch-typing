@@ -14,9 +14,9 @@ $(function() {
     });
     socket.on( 'my response', function( msg ) {
         console.log( msg )
-        {
+        if( typeof msg.data !== 'undefined' ) {
             $( 'h3' ).remove()
-            $( 'div.message_holder' ).append( '<div>'+msg.message+'</div>' )
+            $( 'div.message_holder' ).append( '<div>'+msg.data+'</div>' )
         }
     });
 });

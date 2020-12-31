@@ -6,14 +6,14 @@ socketio = SocketIO(app)
 messages = ['herro']
 
 
-
 @app.route("/")
 def hello():
+    print('rendering home page')
     return render_template('homepage.html')
 
 
 @socketio.on('my event')
-def handle_my_custom_event(json, methods=['GET', 'POST']):
+def handle_my_custom_event(json):
     print('received my event: ' + str(json))
     socketio.emit('my response', json)
 

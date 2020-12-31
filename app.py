@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 messages = ['herro']
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 @app.route('/setcookie', methods=['POST'])
@@ -28,6 +29,12 @@ def hello():
 def handle_my_custom_event(json):
     print('received my event: ' + str(json))
     socketio.emit('my response', json)
+
+
+@socketio.on('disconnect')
+def disconnected():
+    print('user disconnection')
+    socketio.emit('user disconnect', '')
 
 
 @app.route("/send-message", methods=["POST"])

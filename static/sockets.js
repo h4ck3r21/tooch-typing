@@ -1,6 +1,5 @@
 $(function() {
-    var socket = io.connect(
-        'http://' + document.domain + ':' + location.port);
+    var socket = io.connect('/');
     socket.on( 'connect', function() {
       let username = $( '#username').html()
       socket.emit( 'my event', {message: '*Connected*', username: username})

@@ -15,10 +15,13 @@ $(function() {
     socket.on( 'my response', function( msg ) {
         console.log( msg )
         console.log( msg.message )
-        if(msg.data !== 'undefined' ) {
-            $( 'h3' ).remove()
+        if(msg.message) {
+            $( '#error-message' ).hide()
             console.log("Appending " + msg.data )
             $( 'div.message_holder' ).append( '<div>'+msg.message +'</div>' )
+        } else {
+            $( '#error-message' ).show()
+            $( '#error-message' ).html("No message given!!")
         }
     });
 });

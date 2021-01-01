@@ -4,6 +4,7 @@ $(function() {
       let username = $( '#username').html()
       socket.emit( 'my event', {message: '*Connected*', username: username})
       console.log('user connected')
+      $( '#online' ).append( '<div>'+ username + ':&nbsp; online</div>' )
       var form = $( 'form' ).on( 'submit', function( e ) {
         e.preventDefault()
         let user_input = $( 'input.message' ).val()

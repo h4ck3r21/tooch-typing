@@ -31,7 +31,7 @@ $(function() {
     socket.on( 'user disconnect', function() {
       let username = $( '#username').html()
       console.log('sending user disconnect message')
-      $( 'div.message_holder' ).append( '<div>'+ 'User Disconnected'+ '</div>' )
+      $( '#message_holder' ).append( '<div>'+ 'User Disconnected'+ '</div>' )
       socket.emit('online', username)
     });
 
@@ -41,7 +41,7 @@ $(function() {
         if(msg.message) {
             $( '#error-message' ).hide()
             console.log("Appending " + msg.data )
-            $( 'div.message_holder' ).append( '<div>'+ msg.username + ':&nbsp;' + msg.message +'</div>' )
+            $( '#message_holder' ).append( '<div>'+ msg.username + ':&nbsp;' + msg.message +'</div>' )
         } else {
             $( '#error-message' ).show()
             $( '#error-message' ).html("No message given!!")

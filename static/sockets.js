@@ -1,5 +1,5 @@
 $(function() {
-    var socket = io.connect('/');
+    var socket = io.connect('/', {transports: ['websocket']});
     socket.on( 'connect', function() {
       let username = $( '#username').html()
       socket.emit( 'my event', {message: '*Connected*', username: username})

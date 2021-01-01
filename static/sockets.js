@@ -3,8 +3,8 @@ $(function() {
     socket.on( 'connect', function() {
       let username = $( '#username').html()
       socket.emit( 'my event', {message: '*Connected*', username: username})
+      socket.emit( 'connecting', username)
       console.log('user connected')
-      $( '#online' ).append( '<div>'+ username + ':&nbsp; online</div>' )
       var form = $( 'form' ).on( 'submit', function( e ) {
         e.preventDefault()
         let user_input = $( 'input.message' ).val()
@@ -18,11 +18,23 @@ $(function() {
       socket.on('disconnect', function() {
         console.log('user disconnected')
       })
-    });
+    })
+
+    socket.on( 'reload online users', function( users ) {
+      $( '#online' ).empty()
+      users.forEach(function (user, index){
+        console.log(user + 'connected')
+        $( '#online' ).append( '<div>'+ user + ':&nbsp; online</div>' )
+      })
+    })
+
     socket.on( 'user disconnect', function() {
+      let username = $( '#username').html()
       console.log('sending user disconnect message')
       $( 'div.message_holder' ).append( '<div>'+ 'User Disconnected'+ '</div>' )
-    })
+      socket.emit('online', username)
+    });
+
     socket.on( 'my response', function( msg ) {
         console.log( msg )
         console.log( msg.message )

@@ -1,2 +1,2 @@
-# xeasy
-xEz
+# touch typing battle program
+epic

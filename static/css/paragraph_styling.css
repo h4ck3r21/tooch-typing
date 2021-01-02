@@ -1,3 +1,11 @@
 body.error {
     background-color: red;
 }
+
+body {
+    user-select:none;
+}
+
+#para-correct {
+    color: #0f0;
+}

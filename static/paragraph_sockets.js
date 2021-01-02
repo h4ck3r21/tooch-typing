@@ -10,8 +10,9 @@ $(function(){
             }
     })
 
-    socket.on('fix', function(id){
-        if (id == userID) {
+    socket.on('fix', function(json){
+        if (json.userid == userID) {
+            $('#para-correct').html(json.message)
             $('body').removeClass('error');
         }
     });

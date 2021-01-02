@@ -40,14 +40,16 @@ def keypress(json):
     print('received keypress: ' + str(json))
     find_user_by_user_id(json['userID']).get_message(json['input'])
     para = find_user_by_user_id(json['userID']).para
-    socketio.emit('paragraph', para)
     player = find_user_by_user_id(json['userID'])
     player.check()
+    socketio.emit('paragraph', find_user_by_user_id(json['userID']).remaining_char)
     if player.is_correct:
-        print(f'{json["userID"]} made an error')
-        socketio.emit('fix', json['userID'])
+        print(f'{json["userID"]} fixes all errors')
+        socketio.emit('fix', {'userid': json['userID'],
+                              'message': find_user_by_user_id(json['userID']).message,
+                              })
     else:
-        print(f'{json["userID"]} fixed all errors')
+        print(f'{json["userID"]} made an error')
         socketio.emit('error', json['userID'])
 
 
@@ -64,7 +66,10 @@ def set_cookie():
 @app.route("/paragraph/<userid>")
 def paragraph(userid):
     try:
-        return render_template('paragraph.html', paragraph=find_user_by_user_id(userid).para, userid=userid)
+        return render_template('paragraph.html',
+                               paragraph=find_user_by_user_id(userid).para,
+                               userid=userid,
+                               )
     except NoMatchingId:
         sleep(1)
         return paragraph(userid)

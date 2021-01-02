@@ -3,9 +3,12 @@ $(function(){
     let userID = $( '#userID').html()
     document.addEventListener('keypress', logKey);
     function logKey(e) {
-      let user_input = $( 'input.message' ).val()
-      console.log('sending keypress')
-      socket.emit('keypress', {input: user_input, userID:userID})
+      setTimeout(() => {
+           let user_input = $( 'input.message' ).val()
+           console.log('sending keypress')
+           socket.emit('keypress', {input: user_input, userID:userID})
+      }, 100);
+
     }
 
     socket.on( 'connect', function() {
@@ -36,7 +39,7 @@ $(function(){
 
     socket.on('fix', function(id){
         console.log('correct keypress')
-        if (id == userID) {
+        if (id.userid == userID) {
             $('#your-para').removeClass('error');
         }
     })

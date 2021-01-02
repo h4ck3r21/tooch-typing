@@ -1,15 +1,13 @@
 $(function(){
     var socket = io.connect('/', {transports: ['websocket']});
     let userID = $( '#userID').html()
-    document.addEventListener('keypress', logKey);
-    function logKey(e) {
+    $( "#message-box" ).keydown(function() {
       setTimeout(() => {
            let user_input = $( 'input.message' ).val()
            console.log('sending keypress')
            socket.emit('keypress', {input: user_input, userID:userID})
       }, 100);
-
-    }
+    });
 
     socket.on( 'connect', function() {
       let username = $( '#username').html()

@@ -1,5 +1,5 @@
-body.error {
-    background-color: red;
+body {
+    background-color: #fff;
 }
 
 body {
@@ -8,4 +8,8 @@ body {
 
 #para-correct {
     color: #0f0;
+}
+
+#errors {
+    color:#f00;
 }

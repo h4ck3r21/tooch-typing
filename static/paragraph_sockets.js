@@ -2,7 +2,9 @@ $(function(){
     var socket = io.connect('/', {transports: ['websocket']});
     let userID = $( '#userid').html()
     socket.on('paragraph', function(paragraph){
-            $( '#paragraph' ).html(paragraph)
+            $( '#paragraph' ).html(paragraph.para)
+            $('#para-correct').html(paragraph.cor)
+            $( '#errors').html(paragraph.errors)
         })
     socket.on('error', function(id){
             if (id == userID) {
@@ -10,9 +12,8 @@ $(function(){
             }
     })
 
-    socket.on('fix', function(json){
-        if (json.userid == userID) {
-            $('#para-correct').html(json.message)
+    socket.on('fix', function(userid){
+        if (userid == userID) {
             $('body').removeClass('error');
         }
     });

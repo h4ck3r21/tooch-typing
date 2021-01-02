@@ -42,12 +42,17 @@ def keypress(json):
     para = find_user_by_user_id(json['userID']).para
     player = find_user_by_user_id(json['userID'])
     player.check()
-    socketio.emit('paragraph', find_user_by_user_id(json['userID']).remaining_char)
+    if player.cor_msg != '':
+        errors = player.message.split(player.cor_msg, 1)
+    else:
+        errors = player.message
+    socketio.emit('paragraph', {"para": player.remaining_char,
+                                "cor": player.cor_msg,
+                                "errors": errors
+                                })
     if player.is_correct:
         print(f'{json["userID"]} fixes all errors')
-        socketio.emit('fix', {'userid': json['userID'],
-                              'message': find_user_by_user_id(json['userID']).message,
-                              })
+        socketio.emit('fix', json['userID'])
     else:
         print(f'{json["userID"]} made an error')
         socketio.emit('error', json['userID'])

@@ -7,6 +7,7 @@ class Player:
     def __init__(self, name, ID):
         self.name = name
         self.id = ID
+        self.cor_msg = ''
         self.message = ''
         self.para = self.make_paragraph()
         self.char = 0
@@ -23,7 +24,11 @@ class Player:
         print('checking input')
         self.is_correct = self.para.startswith(self.message)
         if self.is_correct:
-            self.remaining_char = self.para.split(self.message, 1)[1]
+            self.cor_msg = self.message
+            if self.message != '':
+                self.remaining_char = self.para.split(self.message, 1)[1]
+            else:
+                self.remaining_char = self.para
             print(self.char)
             self.char = len(self.message)
         print(f'checking if {self.para}\n is equal to {self.message}')

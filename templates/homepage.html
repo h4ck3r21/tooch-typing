@@ -4,7 +4,7 @@
         <title>Not a Game</title>
         <meta charset = "UTF-8" />
         <link rel="icon" href="https://i.ibb.co/BNQXhDM/icon.png">
-        <link rel=stylesheet" type= "text/css" href="{{ url_for('static', filename='css/styling.css') }}">
+        <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/styling.css') }}">
     </head>
     <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -24,17 +24,19 @@
                 <div>
                     <iframe src="/paragraph/{{userid}}" title="your paragraph" id="your-para"></iframe>
                 </div>
+                <input id="message-box" type="text" name="mytext" class="message" />
             </td><td>
-              <div id="enemy-pargraphs"></div>
+              <div id="enemy-pargraphs">
+                  <iframe></iframe>
+                  <iframe></iframe>
+              </div>
             </td><td>
               <div id="log" style="word-break: break-all"></div>
             </td>
         </tr></table>
-    <form action="/send-message" method="post">
         <p align="center">
             <h3 hidden id="username">{{name}}</h3>
             <h3 hidden id="userID">{{userid}}</h3>
-            <input type="text" name="mytext" class="message" />
         </p>
     </form>
     </body>

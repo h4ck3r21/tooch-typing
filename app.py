@@ -1,5 +1,15 @@
+import random
+import string
+from time import sleep
+
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from flask_socketio import SocketIO
+from Touch_typing_game import Player
+
+
+class NoMatchingId(Exception):
+    pass
+
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -8,28 +18,66 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 users_online = []
 
 
-@app.route('/setcookie', methods=['POST'])
+def find_user_by_user_id(ID):
+    print(f'checking if {ID} in {users_online}')
+    for user in users_online:
+        print(f'is {user.id} equal to {ID}; {user.id == ID}')
+        if user.id == ID:
+            print(f'yes')
+            return user
+    raise NoMatchingId('no user found with id')
+
+
+def get_random_string(length):
+    # Random string with the combination of lower and upper case
+    letters = string.ascii_letters
+    result_str = ''.join(random.choice(letters) for _ in range(length))
+    return result_str
+
+
+@socketio.on('keypress')
+def keypress(json):
+    print('received keypress: ' + str(json))
+    find_user_by_user_id(json['userID']).get_message(json['input'])
+    para = find_user_by_user_id(json['userID']).para
+    socketio.emit('paragraph', para)
+    player = find_user_by_user_id(json['userID'])
+    player.check()
+    if player.is_correct:
+        print(f'{json["userID"]} made an error')
+        socketio.emit('fix', json['userID'])
+    else:
+        print(f'{json["userID"]} fixed all errors')
+        socketio.emit('error', json['userID'])
+
+
+@app.route("/setcookie", methods=['POST'])
 def set_cookie():
     user = request.form['name']
     print(f'setting cookie for user {user}')
     resp = make_response(render_template('set-cookie.html'))
-    resp.set_cookie('userID', user)
+    resp.set_cookie('userName', user)
+    resp.set_cookie('userID', get_random_string(16))
     return resp
+
+
+@app.route("/paragraph/<userid>")
+def paragraph(userid):
+    try:
+        return render_template('paragraph.html', paragraph=find_user_by_user_id(userid).para, userid=userid)
+    except NoMatchingId:
+        sleep(1)
+        return paragraph(userid)
 
 
 @app.route("/")
 def hello():
-    name = request.cookies.get('userID')
+    name = request.cookies.get('userName')
+    userID = request.cookies.get('userID')
     if not name:
         return render_template('cookies.html')
     print('rendering home page')
-    return render_template('homepage.html', name=name)
-
-
-@socketio.on('my event')
-def handle_my_custom_event(json):
-    print('received my event: ' + str(json))
-    socketio.emit('my response', json)
+    return render_template('homepage.html', name=name, userid=userID)
 
 
 @socketio.on('disconnect')
@@ -37,20 +85,26 @@ def disconnected():
     global users_online
     print('user disconnection')
     users_online = []
-    socketio.emit('user disconnect', '')
+    socketio.emit('log', 'user disconnected')
+    socketio.emit('user disconnect')
 
 
 @socketio.on('connecting')
-def connect(username):
-    users_online.append(username)
-    print(f'{username} connected')
-    socketio.emit('reload online users', users_online)
+def connect(json):
+    print('received connection: ' + str(json))
+    player = Player(json['username'], json['userID'])
+    users_online.append(player)
+    socketio.emit('log', 'user connected')
 
 
 @socketio.on('online')
-def check_online(username):
-    users_online.append(username)
-    socketio.emit('reload online users', users_online)
+def check_online(ID):
+    print(f'{ID} is online')
+    users_offline = users_online[:]
+    users_offline.remove(find_user_by_user_id(ID))
+    if len(users_offline) == 1:
+        print(f'{users_offline[0].name} disconnected')
+        users_online.remove(users_offline[0])
 
 
 @app.route("/send-message", methods=["POST"])

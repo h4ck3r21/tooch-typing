@@ -1,50 +1,43 @@
-$(function() {
+$(function(){
     var socket = io.connect('/', {transports: ['websocket']});
+    let userID = $( '#userID').html()
+    document.addEventListener('keypress', logKey);
+    function logKey(e) {
+      let user_input = $( 'input.message' ).val()
+      console.log('sending keypress')
+      socket.emit('keypress', {input: user_input, userID:userID})
+    }
+
     socket.on( 'connect', function() {
       let username = $( '#username').html()
-      socket.emit( 'my event', {message: '*Connected*', username: username})
-      socket.emit( 'connecting', username)
+      let userID = $( '#userID').html()
+      socket.emit( 'connecting', {username: username, userID: userID})
       console.log('user connected')
       var form = $( 'form' ).on( 'submit', function( e ) {
-        e.preventDefault()
-        let user_input = $( 'input.message' ).val()
-
-        socket.emit( 'my event', {
-          username : username,
-          message : user_input
+          e.preventDefault()
         })
-        $( 'input.message' ).val( '' ).focus()
-      })
-      socket.on('disconnect', function() {
-        console.log('user disconnected')
-      })
     })
 
-    socket.on( 'reload online users', function( users ) {
-      $( '#online' ).empty()
-      users.forEach(function (user, index){
-        console.log(user + 'connected')
-        $( '#online' ).append( '<div>'+ user + ':&nbsp; online</div>' )
-      })
+    socket.on('log', function(msg) {
+      $( '#log' ).append( '<div>'+ msg + '</div>' )
     })
 
     socket.on( 'user disconnect', function() {
-      let username = $( '#username').html()
       console.log('sending user disconnect message')
-      $( '#message_holder' ).append( '<div>'+ 'User Disconnected'+ '</div>' )
-      socket.emit('online', username)
+      socket.emit('online', userID)
     });
 
-    socket.on( 'my response', function( msg ) {
-        console.log( msg )
-        console.log( msg.message )
-        if(msg.message) {
-            $( '#error-message' ).hide()
-            console.log("Appending " + msg.data )
-            $( '#message_holder' ).append( '<div>'+ msg.username + ':&nbsp;' + msg.message +'</div>' )
-        } else {
-            $( '#error-message' ).show()
-            $( '#error-message' ).html("No message given!!")
+    socket.on('error', function(id){
+        console.log('error')
+        if (id == userID) {
+            $('#your-para').addClass('error');
         }
-    });
+    })
+
+    socket.on('fix', function(id){
+        console.log('correct keypress')
+        if (id == userID) {
+            $('#your-para').removeClass('error');
+        }
+    })
 });

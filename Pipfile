@@ -9,6 +9,7 @@ tqdm = "*"
 gunicorn = "*"
 flask-socketio = "*"
 eventlet = "*"
+essential-generators = "*"
 
 [dev-packages]
 

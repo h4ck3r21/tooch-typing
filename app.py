@@ -23,7 +23,7 @@ def find_user_by_user_id(ID):
     for user in users_online:
         print(f'is {user.id} equal to {ID}; {user.id == ID}')
         if user.id == ID:
-            print(f'yes')
+            print(f'found user')
             return user
     raise NoMatchingId('no user found with id')
 
@@ -39,7 +39,6 @@ def get_random_string(length):
 def keypress(json):
     print('received keypress: ' + str(json))
     find_user_by_user_id(json['userID']).get_message(json['input'])
-    para = find_user_by_user_id(json['userID']).para
     player = find_user_by_user_id(json['userID'])
     player.check()
     if player.cor_msg != '':
@@ -48,7 +47,8 @@ def keypress(json):
         errors = player.message
     socketio.emit('paragraph', {"para": player.remaining_char,
                                 "cor": player.cor_msg,
-                                "errors": errors
+                                "errors": errors,
+                                "id": json['userID'],
                                 })
     if player.is_correct:
         print(f'{json["userID"]} fixes all errors')
@@ -95,7 +95,6 @@ def disconnected():
     global users_online
     print('user disconnection')
     users_online = []
-    socketio.emit('log', 'user disconnected')
     socketio.emit('user disconnect')
 
 
@@ -103,8 +102,16 @@ def disconnected():
 def connect(json):
     print('received connection: ' + str(json))
     player = Player(json['username'], json['userID'])
+    socketio.emit('new user', json['userID'])
+    enemy_ids = {'id': json['userID']}
+    i = 0
+    for user in users_online:
+        print(f'id:{user.id}')
+        enemy_ids[i] = user.id
+        i += 1
+    enemy_ids['len'] = i
+    socketio.emit('connection', enemy_ids)
     users_online.append(player)
-    socketio.emit('log', 'user connected')
 
 
 @socketio.on('online')
@@ -115,6 +122,17 @@ def check_online(ID):
     if len(users_offline) == 1:
         print(f'{users_offline[0].name} disconnected')
         users_online.remove(users_offline[0])
+        socketio.emit('log', 'user connected')
+    socketio.emit('new user', ID)
+    enemy_ids = {'id': ID}
+    i = 0
+    for user in users_online:
+        print(f'id:{user.id}')
+        enemy_ids[i] = user.id
+        i += 1
+    enemy_ids['len'] = i
+    socketio.emit('connection', enemy_ids)
+    socketio.emit('new user', ID)
 
 
 @app.route("/send-message", methods=["POST"])

@@ -25,6 +25,7 @@ $(function(){
 
     socket.on( 'user disconnect', function() {
       console.log('sending user disconnect message')
+      $( "#enemy-paragraphs").remove()
       socket.emit('online', userID)
     });
 
@@ -37,8 +38,31 @@ $(function(){
 
     socket.on('fix', function(id){
         console.log('correct keypress')
-        if (id.userid == userID) {
+        if (id == userID) {
             $('#your-para').removeClass('error');
+        }
+    })
+
+    socket.on('connection', function(enemy_id){
+        console.log('connecting')
+        if (userID == enemy_id.id) {
+            var i;
+            for (i = 0; i < enemy_id.len; i++) {
+              console.log(enemy_id.i)
+              $( "#enemy-paragraphs").append('<iframe src="/paragraph/'+
+               enemy_id[i] +
+               '" title="your paragraph" class="enemy-para"></iframe>');
+            };
+        }
+    })
+
+    socket.on('new user', function(id){
+        console.log('new user: ' + id)
+        console.log('checking if ' + id + 'is not equal to ' + userID)
+        console.log(id != userID)
+        if (id != userID) {
+            console.log('adding enemy paragraph')
+            $( "#enemy-paragraphs").append('<iframe src="/paragraph/'+ id +'" title="your paragraph" class="enemy-para"></iframe>');
         }
     })
 });

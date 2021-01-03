@@ -13,6 +13,7 @@ class Player:
         self.char = 0
         self.is_correct = True
         self.remaining_char = self.para
+        self.score = 0
 
     def get_message(self, msg):
         self.message = msg
@@ -31,7 +32,7 @@ class Player:
                 self.remaining_char = self.para
             print(self.char)
             self.char = len(self.message)
-        print(f'checking if {self.para}\n is equal to {self.message}')
+        self.score = len(self.cor_msg)
         print(self.message == self.para)
         if self.remaining_char == '':
             self.increase_paragraph(self.para)

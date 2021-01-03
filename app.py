@@ -94,12 +94,12 @@ def hello():
 def disconnected():
     global users_online
     print('user disconnection')
-    users_online = []
     socketio.emit('user disconnect')
 
 
 @socketio.on('connecting')
 def connect(json):
+    socketio.emit('log', 'user connected')
     print('received connection: ' + str(json))
     player = Player(json['username'], json['userID'])
     socketio.emit('new user', json['userID'])
@@ -122,7 +122,7 @@ def check_online(ID):
     if len(users_offline) == 1:
         print(f'{users_offline[0].name} disconnected')
         users_online.remove(users_offline[0])
-        socketio.emit('log', 'user connected')
+        socketio.emit('log', 'user_disconected')
     socketio.emit('new user', ID)
     enemy_ids = {'id': ID}
     i = 0

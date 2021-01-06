@@ -25,7 +25,7 @@ $(function(){
 
     socket.on( 'user disconnect', function() {
       console.log('sending user disconnect message')
-      $( "#enemy-paragraphs").remove()
+      $( "#enemy-paragraphs").empty()
       socket.emit('online', userID)
     });
 

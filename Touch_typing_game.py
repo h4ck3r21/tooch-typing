@@ -40,7 +40,7 @@ class Player:
     @staticmethod
     def make_paragraph():
         print('makin paragraf')
-        para = gen.paragraph()
+        para = gen.paragraph(min_sentences=10, max_sentences=10)
         return para
 
     def increase_paragraph(self, paragraph):

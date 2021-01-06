@@ -1,5 +1,6 @@
 import random
 import string
+from collections import Counter
 from time import sleep
 
 from flask import Flask, render_template, request, redirect, url_for, make_response
@@ -8,6 +9,10 @@ from Touch_typing_game import Player
 
 
 class NoMatchingId(Exception):
+    pass
+
+
+class DuplicateId(Exception):
     pass
 
 
@@ -25,7 +30,7 @@ def find_user_by_user_id(ID):
         if user.id == ID:
             print(f'found user')
             return user
-    raise NoMatchingId('no user found with id')
+    users_online.append(Player('Unknown', ID))
 
 
 def get_random_string(length):
@@ -37,6 +42,7 @@ def get_random_string(length):
 
 @socketio.on('keypress')
 def keypress(json):
+    print(f'online users: {users_online}')
     print('received keypress: ' + str(json))
     find_user_by_user_id(json['userID']).get_message(json['input'])
     player = find_user_by_user_id(json['userID'])
@@ -99,6 +105,10 @@ def disconnected():
 
 @socketio.on('connecting')
 def connect(json):
+    sleep(5)
+    remove_duplicates()
+    if json['userID'] in [user.id for user in users_online]:
+        users_online.remove(find_user_by_user_id(json['userID']))
     socketio.emit('log', 'user connected')
     print('received connection: ' + str(json))
     player = Player(json['username'], json['userID'])
@@ -111,11 +121,22 @@ def connect(json):
         i += 1
     enemy_ids['len'] = i
     socketio.emit('connection', enemy_ids)
+    print('added user')
     users_online.append(player)
+
+
+def remove_duplicates():
+    if [item for item, count in Counter([user.id for user in users_online]).items() if count > 1]:
+        for ID in [item for item, count in Counter([user.id for user in users_online]).items() if count > 1]:
+            users_online.remove(find_user_by_user_id(ID))
+            remove_duplicates()
 
 
 @socketio.on('online')
 def check_online(ID):
+    remove_duplicates()
+    if ID in [user.id for user in users_online]:
+        users_online.remove(find_user_by_user_id(ID))
     print(f'{ID} is online')
     users_offline = users_online[:]
     users_offline.remove(find_user_by_user_id(ID))
@@ -123,7 +144,6 @@ def check_online(ID):
         print(f'{users_offline[0].name} disconnected')
         users_online.remove(users_offline[0])
         socketio.emit('log', 'user_disconected')
-    socketio.emit('new user', ID)
     enemy_ids = {'id': ID}
     i = 0
     for user in users_online:
@@ -131,6 +151,7 @@ def check_online(ID):
         enemy_ids[i] = user.id
         i += 1
     enemy_ids['len'] = i
+    print('checking if online')
     socketio.emit('connection', enemy_ids)
     socketio.emit('new user', ID)
 

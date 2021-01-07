@@ -99,9 +99,10 @@ def disconnected():
 
 @socketio.on('connecting')
 def connect(json):
-    socketio.emit('log', 'user connected')
+    user_name = json['username']
+    socketio.emit('log', f'{user_name} connected')
     print('received connection: ' + str(json))
-    player = Player(json['username'], json['userID'])
+    player = Player(user_name, json['userID'])
     socketio.emit('new user', json['userID'])
     enemy_ids = {'id': json['userID']}
     i = 0

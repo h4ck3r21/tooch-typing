@@ -83,18 +83,20 @@ def paragraph(userid):
 @app.route("/")
 def hello():
     name = request.cookies.get('userName')
-    userID = request.cookies.get('userID')
+    user_id = request.cookies.get('userID')
     if not name:
         return render_template('cookies.html')
     print('rendering home page')
-    return render_template('homepage.html', name=name, userid=userID)
+    return render_template('homepage.html', name=name, userid=user_id)
 
 
 @socketio.on('disconnect')
 def disconnected():
     global users_online
-    print('user disconnection')
-    socketio.emit('user disconnect')
+    name = request.cookies.get('userName')
+    user_id = request.cookies.get('userID')
+    print(f'user {name} / {user_id} disconnected.')
+    socketio.emit(f'user disconnect')
 
 
 @socketio.on('connecting')
@@ -116,16 +118,16 @@ def connect(json):
 
 
 @socketio.on('online')
-def check_online(ID):
-    print(f'{ID} is online')
+def check_online(user_id):
+    print(f'{user_id} is online')
     users_offline = users_online[:]
-    users_offline.remove(find_user_by_user_id(ID))
+    users_offline.remove(find_user_by_user_id(user_id))
     if len(users_offline) == 1:
         print(f'{users_offline[0].name} disconnected')
         users_online.remove(users_offline[0])
-        socketio.emit('log', 'user_disconected')
-    socketio.emit('new user', ID)
-    enemy_ids = {'id': ID}
+        socketio.emit('log', 'user disconnected')
+    socketio.emit('new user', user_id)
+    enemy_ids = {'id': user_id}
     i = 0
     for user in users_online:
         print(f'id:{user.id}')
@@ -133,7 +135,7 @@ def check_online(ID):
         i += 1
     enemy_ids['len'] = i
     socketio.emit('connection', enemy_ids)
-    socketio.emit('new user', ID)
+    socketio.emit('new user', user_id)
 
 
 @app.route("/send-message", methods=["POST"])

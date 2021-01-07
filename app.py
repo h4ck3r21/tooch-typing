@@ -4,7 +4,7 @@ from time import sleep
 
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from flask_socketio import SocketIO
-from Touch_typing_game import Player
+from touch_typing_game import Player
 
 
 class NoMatchingId(Exception):

@@ -3,6 +3,7 @@ from essential_generators import DocumentGenerator
 gen = DocumentGenerator()
 
 
+
 class Player:
     def __init__(self, name, ID):
         self.name = name
@@ -41,8 +42,16 @@ class Player:
     def make_paragraph():
         print('makin paragraf')
         para = gen.paragraph()
-        return para
+        return sanitise_paragraph(para)
 
     def increase_paragraph(self, paragraph):
         print('adding more paragraph')
-        self.para = ' '.join([paragraph, gen.paragraph()])
+        self.para = ' '.join([paragraph, self.make_paragraph()])
+
+
+def sanitise_paragraph(para: str) -> str:
+    """Remove unwanted characters.
+
+    Filter down to just ASCII characters
+    """
+    return para.encode().decode("ASCII", "ignore")

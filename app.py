@@ -21,6 +21,7 @@ socketio = SocketIO(app)
 messages = ['herro']
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 users_online = []
+users_offline = users_online[:]
 
 
 def find_user_by_user_id(ID):
@@ -31,6 +32,7 @@ def find_user_by_user_id(ID):
             print(f'found user')
             return user
     users_online.append(Player('Unknown', ID))
+    return find_user_by_user_id(ID)
 
 
 def get_random_string(length):
@@ -98,7 +100,8 @@ def hello():
 
 @socketio.on('disconnect')
 def disconnected():
-    global users_online
+    global users_offline
+    users_offline = users_online[:]
     print('user disconnection')
     socketio.emit('user disconnect')
 
@@ -138,8 +141,8 @@ def check_online(ID):
     if ID in [user.id for user in users_online]:
         users_online.remove(find_user_by_user_id(ID))
     print(f'{ID} is online')
-    users_offline = users_online[:]
-    users_offline.remove(find_user_by_user_id(ID))
+    if find_user_by_user_id(ID) in users_offline:
+        users_offline.remove(find_user_by_user_id(ID))
     if len(users_offline) == 1:
         print(f'{users_offline[0].name} disconnected')
         users_online.remove(users_offline[0])

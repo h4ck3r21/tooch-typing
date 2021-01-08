@@ -109,12 +109,14 @@ def connect(json):
     enemy_ids = {'id': json['userID']}
     i = 0
     for user in users_online:
-        print(f'id:{user.id}')
-        enemy_ids[i] = user.id
-        i += 1
+        if user.id != json['userID']:
+            print(f'id:{user.id}')
+            enemy_ids[i] = user.id
+            i += 1
     enemy_ids['len'] = i
     socketio.emit('connection', enemy_ids)
-    users_online.append(player)
+    if json['userID'] not in [user.id for user in users_online]:
+        users_online.append(player)
 
 
 @socketio.on('online')
@@ -126,7 +128,6 @@ def check_online(user_id):
         print(f'{users_offline[0].name} disconnected')
         users_online.remove(users_offline[0])
         socketio.emit('log', 'user disconnected')
-    socketio.emit('new user', user_id)
     enemy_ids = {'id': user_id}
     i = 0
     for user in users_online:

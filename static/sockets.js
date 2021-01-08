@@ -1,6 +1,7 @@
 $(function(){
     var socket = io.connect('/', {transports: ['websocket']});
     let userID = $( '#userID').html()
+    var Ids = []
     $( "#message-box" ).keydown(function() {
       setTimeout(() => {
            let user_input = $( 'input.message' ).val()
@@ -25,6 +26,7 @@ $(function(){
 
     socket.on( 'user disconnect', function() {
       console.log('sending user disconnect message')
+      Ids = []
       $( "#enemy-paragraphs").empty()
       socket.emit('online', userID)
     });
@@ -49,6 +51,7 @@ $(function(){
             var i;
             for (i = 0; i < enemy_id.len; i++) {
               console.log(enemy_id.i)
+              Ids.push(enemy_id[i])
               $( "#enemy-paragraphs").append('<iframe src="/paragraph/'+
                enemy_id[i] +
                '" title="your paragraph" class="enemy-para"></iframe>');
@@ -60,7 +63,8 @@ $(function(){
         console.log('new user: ' + id)
         console.log('checking if ' + id + 'is not equal to ' + userID)
         console.log(id != userID)
-        if (id != userID) {
+        if (id != userID && !(id in Ids)) {
+            Ids.push(id)
             console.log('adding enemy paragraph')
             $( "#enemy-paragraphs").append('<iframe src="/paragraph/'+ id +'" title="your paragraph" class="enemy-para"></iframe>');
         }

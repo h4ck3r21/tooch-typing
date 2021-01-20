@@ -108,11 +108,13 @@ def connect(json):
     socketio.emit('new user', json['userID'])
     enemy_ids = {'id': json['userID']}
     i = 0
+    print(f'users online:{users_online}')
     for user in users_online:
         if user.id != json['userID']:
             print(f'id:{user.id}')
             enemy_ids[i] = user.id
             i += 1
+    print(f'enemy ids: {enemy_ids}')
     enemy_ids['len'] = i
     socketio.emit('connection', enemy_ids)
     if json['userID'] not in [user.id for user in users_online]:

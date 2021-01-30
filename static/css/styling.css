@@ -24,6 +24,11 @@ iframe.error {
     width: 50%;
 }
 
+#victory {
+    font-size: 1000%;
+    text-align:center;
+}
+
 .hidden {
     hidden
 }

@@ -96,4 +96,14 @@ $(function(){
         $('#start-button').addClass('hidden')
     })
 
+    socket.on('victory', function(json){
+        $('#table').addClass('hidden')
+        $('#victory').html(json.name + ' WINS')
+        $('#victory').removeClass('hidden')
+        setTimeout(() => {
+            $('#victory').addClass('hidden')
+            location.reload()
+        }, 5000)
+    })
+
 });

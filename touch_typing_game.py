@@ -3,7 +3,6 @@ from essential_generators import DocumentGenerator
 gen = DocumentGenerator()
 
 
-
 class Player:
     def __init__(self, name, ID):
         self.name = name
@@ -16,6 +15,7 @@ class Player:
         self.remaining_char = self.para
         self.score = 0
         self.ready = False
+        self.victory = False
 
     def get_message(self, msg):
         self.message = msg
@@ -35,6 +35,8 @@ class Player:
             print(self.char)
             self.char = len(self.message)
         self.score = len(self.cor_msg)
+        if self.score >= 5000:
+            self.victory = True
         print(self.message == self.para)
         if self.remaining_char == '':
             self.increase_paragraph(self.para)
@@ -56,4 +58,3 @@ def sanitise_paragraph(para: str) -> str:
     Filter down to just ASCII characters
     """
     return ' '.join(para.encode().decode("ASCII", "ignore").split("\n"))
-

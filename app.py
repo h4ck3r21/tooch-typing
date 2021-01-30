@@ -43,6 +43,7 @@ def get_random_string(length):
 
 @socketio.on('keypress')
 def keypress(json):
+    global users_online
     print('received keypress: ' + str(json))
     find_user_by_user_id(json['userID']).get_message(json['input'])
     player = find_user_by_user_id(json['userID'])
@@ -62,6 +63,9 @@ def keypress(json):
     else:
         print(f'{json["userID"]} made an error')
         socketio.emit('error', json['userID'])
+    if player.victory:
+        socketio.emit('victory', {'userid': json['userID'], 'name': player.name})
+        users_online = []
 
 
 @app.route("/setcookie", methods=['POST'])

@@ -21,6 +21,13 @@
             integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
             crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='sockets.js') }}"></script>
+    <script>
+        var userID = $( '#userID').html()
+        var socket = io.connect('/', {transports: ['websocket']});
+        function begin(){
+            socket.emit('ready', userID)
+        }
+    </script>
     <table width="100%" class="table"><tr>
             <colgroup>
                 <col width="60%">
@@ -29,7 +36,8 @@
             </colgroup>
             <td>
                 <div>
-                    <iframe src="/paragraph/{{userid}}" title="your paragraph" id="your-para"></iframe>
+                    <iframe src="/paragraph/{{userid}}" title="your paragraph" id="your-para" class="hidden"></iframe>
+                    <button onclick="begin()" type="button" id="start-button">Start</button>
                 </div>
                 <input id="message-box" type="text" name="mytext" class="message" />
             </td><td>

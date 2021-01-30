@@ -15,6 +15,7 @@ class Player:
         self.is_correct = True
         self.remaining_char = self.para
         self.score = 0
+        self.ready = False
 
     def get_message(self, msg):
         self.message = msg
@@ -54,4 +55,5 @@ def sanitise_paragraph(para: str) -> str:
 
     Filter down to just ASCII characters
     """
-    return para.encode().decode("ASCII", "ignore")
+    return ' '.join(para.encode().decode("ASCII", "ignore").split("\n"))
+

@@ -148,5 +148,13 @@ def receive():
     return redirect(url_for("hello"))
 
 
+@socketio.on('ready')
+def ready(ID):
+    user = find_user_by_user_id(ID)
+    user.ready = True
+    if not [player for player in users_online if not player.ready]:
+        socketio.emit('start')
+
+
 if __name__ == '__main__':
     socketio.run(app)

@@ -82,4 +82,11 @@ $(function(){
             $( "#enemy-paragraphs").append('<iframe src="/paragraph/'+ id +'" title="your paragraph" class="enemy-para"></iframe>');
         }
     })
+
+    socket.on('start', function(){
+        console.log('starting')
+        $('#your-para').removeClass('hidden')
+        $('#start-button').addClass('hidden')
+    })
+
 });

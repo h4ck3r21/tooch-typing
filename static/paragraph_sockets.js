@@ -23,7 +23,7 @@ $(function(){
     });
 
     socket.on('info', function(info){
-        if (info.id = userID) {
+        if (info.id == userID) {
             $('#name').html(info.name)
             $('#score').html(info.score)
         }

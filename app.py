@@ -48,6 +48,7 @@ def keypress(json):
     find_user_by_user_id(json['userID']).get_message(json['input'])
     player = find_user_by_user_id(json['userID'])
     player.check()
+    socketio.emit('info', {'id': player.id, 'score': str(player.score), 'name': player.name})
     if player.cor_msg != '':
         errors = player.message.split(player.cor_msg, 1)
     else:

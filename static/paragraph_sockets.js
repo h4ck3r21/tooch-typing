@@ -21,4 +21,11 @@ $(function(){
             $('body').removeClass('error');
         }
     });
+
+    socket.on('info', function(info){
+        if (info.id = userID) {
+            $('#name').html(info.name)
+            $('#score').html(info.score)
+        }
+    })
 });

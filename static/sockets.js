@@ -11,6 +11,13 @@ $(function(){
       }, 100);
     });
 
+    socket.on('resend_user', function(ID) {
+        if (userID == ID) {
+            let username = $( '#username').html()
+            socket.emit('user_details', {ID:ID, name:username})
+        }
+    })
+
     socket.on( 'connect', function() {
       if (connected == false) {
           connected = true

@@ -22,10 +22,9 @@
             crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='sockets.js') }}"></script>
     <script>
-        var userID = $( '#userID').html()
         var socket = io.connect('/', {transports: ['websocket']});
         function begin(){
-            socket.emit('ready', userID)
+            socket.emit('ready', '{{userid}}')
         }
     </script>
     <table width="100%" class="table"><tr>

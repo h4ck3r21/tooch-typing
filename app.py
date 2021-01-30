@@ -25,7 +25,13 @@ def find_user_by_user_id(ID):
         if user.id == ID:
             print(f'found user')
             return user
+    socketio.emit('resend_user', ID)
     raise NoMatchingId('no user found with id')
+
+
+@socketio.on('user_details')
+def add_user(details):
+    users_online.append(Player(details['name'], details['ID']))
 
 
 def get_random_string(length):

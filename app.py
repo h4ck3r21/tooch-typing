@@ -85,6 +85,7 @@ def paragraph(userid):
         return render_template('paragraph.html',
                                paragraph=find_user_by_user_id(userid).para,
                                userid=userid,
+                               name=find_user_by_user_id(userid).name
                                )
     except NoMatchingId:
         sleep(1)

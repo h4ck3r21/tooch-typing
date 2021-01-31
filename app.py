@@ -116,6 +116,7 @@ def connect(json):
     socketio.emit('log', f'{user_name} connected')
     print('received connection: ' + str(json))
     player = Player(user_name, json['userID'])
+    socketio.emit('info', {'id': player.id, 'score': str(player.score), 'name': player.name})
     socketio.emit('new user', json['userID'])
     enemy_ids = {'id': json['userID']}
     i = 0

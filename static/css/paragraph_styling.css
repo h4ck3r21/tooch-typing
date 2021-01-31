@@ -18,11 +18,11 @@ body {
 }
 
 #para-correct {
-    color: #0f0;
+    color: #0c0;
     text-decoration: underline;
 }
 
 #errors {
-    color:#f00;
+    color:#e00;
     text-decoration: underline;
 }
